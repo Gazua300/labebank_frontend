@@ -6,4 +6,4 @@ Aplicativo para operações bancárias. Operações básicas como saldo, depósi
 
 >Obs.: O app está em contínuas atualizações, podendo assim ser agregada n outras funcionalidades.
 
->Deploy da aplicação: https://labebank-frontend.herokuapp.com/<br>
+>Deploy da aplicação: https://brief-doll.surge.sh/

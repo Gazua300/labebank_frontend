@@ -44,6 +44,13 @@ const Container = styled.div`
 		margin-bottom: 10px;
 	}
 
+
+	@media(max-width: 425px){
+		input[type=date]{
+			width: 19vw;
+		}
+	}
+
 `
 const Header = styled.header`
 	img{
