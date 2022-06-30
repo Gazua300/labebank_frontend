@@ -1,7 +1,7 @@
 # labebank_frontend
 
 
-Aplicativo para operações bancárias. Operações básicas como saldo, depósito e transferência. A página inícial vem com um logo para acesso a conto, caso o usuário não possua um link o redireciona para a página de cadastro.
+Aplicativo para operações bancárias como saldo, depósito e transferência. O usuário precisa logar na sua conta para efetuar as operações, caso não possua conta pode fazer um cadastramento através de um link na página de login.
 
 
 >Obs.: O app está em contínuas atualizações, podendo assim ser agregada n outras funcionalidades.
