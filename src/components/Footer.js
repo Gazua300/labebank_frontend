@@ -27,7 +27,7 @@ const Footer = ()=>{
 
 	return<Containter>
 			<img src={Home} onClick={()=> history('/')} alt=''/>
-			<img src={Exit} onClick={logout} alt=''/>
+			<img src={Exit} width='50' onClick={logout} alt=''/>
 		  </Containter>
 }
 export default Footer
