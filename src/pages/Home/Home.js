@@ -40,7 +40,7 @@ const Home = ()=>{
 	}, [])
 
 	return<Container>
-			<h1>Bem vindos ao Labebank</h1>
+			<h1>Bem vindos ao Fakebank</h1>
 			<div onClick={()=> history('/login')}>Acessar</div>
 		  </Container>
 }
