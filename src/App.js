@@ -8,10 +8,13 @@ const GlobalStyle = createGlobalStyle`
 	body{
     background-image: linear-gradient(90deg, whitesmoke, gray);
     background-size: cover;
+    margin: 30px;
 	}
+
   h3{
     text-shadow: 2px 2px 4px whitesmoke;
   }
+
   input{
     width: 200px;
     border-radius: 10px;

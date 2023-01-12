@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom'
 const Deposit = ()=>{
 	const history = useNavigate()
 	const [form, setForm] = useState({
-		email:'',
+		password:'',
 		cpf:'',
 		value:''
 	})
@@ -39,7 +39,8 @@ const Deposit = ()=>{
 		e.preventDefault()
 
 		const body = {
-			email: form.email,
+			token: localStorage.getItem('token'),
+			password: form.password,
 			cpf: Number(form.cpf),
 			value: Number(form.value)
 		}
@@ -47,12 +48,17 @@ const Deposit = ()=>{
 		axios.post(`${url}/accounts/deposit`, body).then(res=>{
 			alert(`Seu deposito de R$ ${form.value} foi efetuado com sucesso.`)
 			setForm({
-				email:'',
+				password:'',
 				cpf:'',
 				value:''
 			})
 		}).catch(err=>{
-			console.log(err.response)
+			const msg = err.response.data.message
+			if(msg === 'jwt expired'){
+				alert(`Token expirado\nPor motivos de segurança você deve efetuar login novamente`)
+			}else{
+				alert(err.response.data.message)
+			}
 		})
 
 	}
@@ -64,13 +70,13 @@ const Deposit = ()=>{
 			 <Header/>
 			 <Container>
 				<h3>Depositos</h3>
-				<form onSubmit={addCash}>
-					<input type='text' name='email' value={form.email} onChange={onChange}
-					 placeholder='nome@email.com' autoFocus required/>
+				<form onSubmit={addCash}>					
 					<input type='number' name='cpf' value={form.cpf} onChange={onChange}
-					 placeholder='CPF(somente números)' required/>
+					 placeholder='CPF(somente números)' autoFocus required/>
 					<input type='number' name='value' value={form.value} onChange={onChange}
 					 placeholder='R$ 0,00' required/>
+					<input type='password' name='password' value={form.password} onChange={onChange}
+					 placeholder='Sua senha' required/>
 					<button>Efetuar</button>
 				</form>
 			  </Container>

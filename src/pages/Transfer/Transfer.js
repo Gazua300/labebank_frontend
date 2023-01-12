@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 const Transfer = ()=>{
 	const history = useNavigate()
 	const [form, setForm] = useState({
-		email:'',
+		password:'',
 		cpf:'',
 		recipientName:'',
 		recipientCpf:'',
@@ -37,7 +37,8 @@ const Transfer = ()=>{
 		e.preventDefault()
 
 		const body = {
-			email: form.email,
+			token: localStorage.getItem('token'),
+			password: form.password,
 			cpf: Number(form.cpf),
 			recipientName: form.recipientName,
 			recipientCpf: Number(form.recipientCpf),
@@ -47,14 +48,19 @@ const Transfer = ()=>{
 		axios.post(`${url}/accounts/transfer`, body).then(res=>{
 			alert(res.data)
 			setForm({
-				email:'',
+				password:'',
 				cpf:'',
 				recipientName:'',
 				recipientCpf:'',
 				value:''
 			})
 		}).catch(err=>{
-			alert(err.response.data)
+			const msg = err.response.data.message
+			if(msg === 'jwt expired'){
+				alert(`Token expirado\nPor motivos de segurança você deve efetuar login novamente`)
+			}else{
+				alert(err.response.data)
+			}
 		})
 
 	}
@@ -65,17 +71,17 @@ const Transfer = ()=>{
 			<Header/>
 			 <Container>
 				<h3>Transferências</h3>
-				<form onSubmit={transfer}>
-					<input type='text' name='email' value={form.email} onChange={onChange}
-					 placeholder='nome@email.com' required/>
+				<form onSubmit={transfer}>					
 					<input type='number' name='cpf' value={form.cpf}
-					 onChange={onChange} placeholder='CPF(somente números)' required/>
+					 onChange={onChange} placeholder='CPF(somente números)' autoFocus required/>
 					<input type='text' name='recipientName' value={form.recipientName}
 					 onChange={onChange} placeholder='Nome do destinatário' required/>
 					<input type='number' name='recipientCpf' value={form.recipientCpf}
 					 onChange={onChange} placeholder='CPF do destinatário' required/>
 					<input type='number' name='value' value={form.value} onChange={onChange}
 					 placeholder='Valor R$ 0,00'required/>
+					<input type='password' name='password' value={form.password} onChange={onChange}
+					 placeholder='Sua senha' required/>
 					<button>Transferir</button>
 				</form>
 			  </Container>

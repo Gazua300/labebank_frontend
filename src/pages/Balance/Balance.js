@@ -13,9 +13,11 @@ import { useNavigate } from 'react-router-dom'
 const Home = ()=>{
 	const history = useNavigate()
 	const [form, setForm] = useState({
-		email:'',
-		cpf:''
+		cpf:'',
+		password:''
 	})
+
+
 
 	useEffect(()=>{
 		const token = localStorage.getItem('token')
@@ -37,14 +39,24 @@ const Home = ()=>{
 		e.preventDefault()
 
 		const body = {
-			email: form.email,
+			token: localStorage.getItem('token'),
+			password: form.password,
 			cpf: Number(form.cpf)
 		}
 
 		axios.post(`${url}/accounts/balance`, body).then(res=>{
 			document.getElementById('result').innerHTML = `${res.data}`
+			setForm({
+				cpf:'',
+				password:''
+			})
 		}).catch(err=>{
-			alert(err.response.data.message)
+			const msg = err.response.data.message
+			if(msg === 'jwt expired'){
+				alert(`Token expirado\nPor motivos de segurança você deve efetuar login novamente`)
+			}else{
+				alert(err.response.data.message)
+			}
 		})
 
 	}
@@ -52,13 +64,13 @@ const Home = ()=>{
 //===============================Renderizaão===========================
 	return<div>
 		  <Header/>
-		  <Container>
+		  <Container className='content'>
 				<h3>Consulta de saldo</h3>
-			<form onSubmit={getBalance}>
-				<input name='email' value={form.name} onChange={onChange}
-				 type='email' placeholder='nome@email.com' autoFocus required />
+			<form onSubmit={getBalance}>				
 				<input name='cpf' value={form.cpf} onChange={onChange}
 				 type='number' min='0' placeholder='CPF(somente números)'required/>
+				<input name='password' value={form.password} onChange={onChange}
+				 type='password' placeholder='Sua senha' autoFocus required/>
 				<button>Ver saldo</button>
 				<p id='result'></p>
 			</form>

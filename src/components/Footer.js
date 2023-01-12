@@ -19,7 +19,7 @@ const Footer = ()=>{
 		const decide = window.confirm('Tem certeza que deseja deslogar?')
 
 		if(decide){
-			localStorage.removeItem('token')
+			localStorage.clear()
 			history('/')
 		}
 	}

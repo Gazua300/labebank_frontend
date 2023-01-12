@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 const Payments = ()=>{
 	const history = useNavigate()
 	const [form, setForm] = useState({
-		email:'',
+		password:'',
 		cpf:'',
 		initialDate:'',
 		value:'',
@@ -39,7 +39,8 @@ const Payments = ()=>{
 		e.preventDefault()
 
 		const body = {
-			email: form.email,
+			token: localStorage.getItem('token'),
+			password: form.password,
 			cpf: Number(form.cpf),
 			initialDate: form.initialDate,
 			value: form.value,
@@ -49,14 +50,19 @@ const Payments = ()=>{
 		axios.post(`${url}/accounts/payment`, body).then(res=>{
 			alert('Pagamento efetuado com sucesso!')
 			setForm({
-				email:'',
+				password:'',
 				cpf:'',
 				initialDate:'',
 				value:'',
 				description:''
 			})
 		}).catch(err=>{
-			alert(err.response.data.message)
+			const msg = err.response.data.message
+			if(msg === 'jwt expired'){
+				alert(`Token expirado\nPor motivos de segurança você deve efetuar login novamente`)
+			}else{
+				alert(err.response.data.message)
+			}
 		})
 
 	}
@@ -66,9 +72,7 @@ const Payments = ()=>{
 			<Header/>
 			 <Container>
 				<h3>Pagamentos</h3>
-				<form onSubmit={pay}>
-					<input type='text' name='email' value={form.email} onChange={onChange}
-					 placeholder='nome@email.com' required/>
+				<form onSubmit={pay}>					
 					<input type='number' name='cpf' value={form.cpf} onChange={onChange}
 					 placeholder='CPF(somente números)' required/>
 					<input type='date' name='initialDate' value={form.initialDate} onChange={onChange}
@@ -77,6 +81,8 @@ const Payments = ()=>{
 					 placeholder='Descrição' required/>
 					<input type='number' name='value' value={form.value} onChange={onChange}
 					 placeholder='Valor R$ 0,00' required/>
+					<input type='password' name='password' value={form.password} onChange={onChange}
+					 placeholder='Sua senha' required/>
 					<button>Efetuar pagamento</button>
 				</form>
 			  </Container>

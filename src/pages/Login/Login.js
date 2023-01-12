@@ -79,11 +79,11 @@ const Login = ()=>{
 
 		const body = {
 			email: form.email,
-			cpf: form.cpf,
 			password: form.password
 		}
 		axios.post(`${url}/accounts/login`, body).then(res=>{
-			localStorage.setItem('token', res.data)
+			localStorage.setItem('id', res.data.id)
+			localStorage.setItem('token', res.data.token)
 			history('/balance')
 		}).catch(err=>{
 			alert(err.response.data)
@@ -101,8 +101,6 @@ const Login = ()=>{
 				<h3>Acesse sua conta</h3>
 				<input type='email' name='email' value={form.email} onChange={onChange}
 				 placeholder='nome@email.com' required autoFocus/>
-				<input type='number' name='cpf' value={form.cpf} onChange={onChange}
-				 placeholder='CPF(somente números)' required/>
 				<input type='password' name='password' value={form.password} onChange={onChange}
 				 placeholder='Senha' required />
 				<button>Acessar</button>

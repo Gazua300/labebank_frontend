@@ -3,8 +3,9 @@ import {Container, Card} from './styled'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import { useNavigate } from 'react-router-dom'
-import {url} from '../../constants/urls'
+import { url } from '../../constants/urls'
 import axios from 'axios'
+import { convertDate } from '../../utils/ConvertDate'
 
 
 
@@ -14,9 +15,11 @@ const Statement = ()=>{
 	const history = useNavigate()
 	const [transaction, setTransaction] = useState([])
 	const [form, setForm] = useState({
-		email:'',
+		password:'',
 		cpf:''
 	})
+
+
 
 
 	useEffect(()=>{
@@ -39,15 +42,24 @@ const Statement = ()=>{
 		e.preventDefault()
 
 		const body = {
-			email: form.email,
+			token: localStorage.getItem('token'),
+			password: form.password,
 			cpf: Number(form.cpf)
 		}
 
 		axios.post(`${url}/accounts/statement`, body).then(res=>{
-			console.log(res.data)
 			setTransaction(res.data)
+			setForm({
+				cpf:'',
+				password:''
+			})
 		}).catch(err=>{
-			alert(err.response.data.message)
+			const msg = err.response.data.message
+			if(msg === 'jwt expired'){
+				alert(`Token expirado\nPor motivos de segurança você deve efetuar login novamente`)
+			}else{
+				alert(err.response.data.message)
+			}
 		})
 
 	}
@@ -55,24 +67,24 @@ const Statement = ()=>{
 
 //===============================Renderizaão===========================
 	return<div>
-		  <Header/>
-		  <Container>
-				<h3>Extrato</h3>
-			<form onSubmit={statement}>
-				<input name='email' value={form.name} onChange={onChange}
-				 type='email' placeholder='Nome e sobrenome' autoFocus required />
-				<input name='cpf' value={form.cpf} onChange={onChange}
-				 type='number' min='0' placeholder='CPF(somente números)'required/>
-				<button>Consultar</button>
-				{transaction && transaction.map(state=>{
-					return <Card><b>Valor: </b>{state.value}<br/>
-							  <b>Data: </b>{state.date}<br/>
-							  <b>Descrição: </b>{state.description}<hr/>
-						   </Card>
-				})}
-			</form>
-		   </Container>
-		   <Footer/>
+			<Header/>
+			<Container className='content'>
+					<h3>Extrato</h3>
+				<form onSubmit={statement}>				
+					<input name='cpf' value={form.cpf} onChange={onChange}
+					type='number' min='0' placeholder='CPF(somente números)'required/>
+					<input name='password' value={form.password} onChange={onChange}
+					type='password' placeholder='Sua senha' autoFocus required />
+					<button>Consultar</button>
+					{transaction && transaction.map(state=>{
+						return <Card><b>Valor: </b>{state.value}<br/>
+								<b>Data: </b>{convertDate(state.date)}<br/>
+								<b>Descrição: </b>{state.description}<hr/>
+							</Card>
+					})}
+				</form>
+			</Container>
+			<Footer/>
 		  </div>
 }
 export default Statement

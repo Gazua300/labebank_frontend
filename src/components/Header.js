@@ -19,7 +19,7 @@ const Header = ()=>{
 			<button onClick={()=> history('/balance')}>Saldo</button>
 			<button onClick={()=> history('/statement')}>Extrato</button>
 			<button onClick={()=> history('/pay')}>Pagamentos</button>
-			<button onClick={()=> history('/signup')}>Criar conta</button>
+			<button onClick={()=> history('/profile')}>Conta</button>
 			<button onClick={()=> history('/transfer')}>Transferências</button>
 			<button onClick={()=> history('/deposit')}>Deposito</button>
 		  </Container>
