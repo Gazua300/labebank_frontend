@@ -18,7 +18,11 @@ export const Container = styled.div`
 		margin: 10px;
 		input[type=date]{
 			width: 19vw;
+			@media(max-width: 700px){
+				width: 60%;
+			}	
 		}
+		
 		input{
 			background: transparent;
 			padding: 5px;
