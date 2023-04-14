@@ -69,9 +69,8 @@ const Container = styled.div`
 const Login = ()=>{
 	const history = useNavigate()
 	const [form, setForm] = useState({
-		email:'',
-		cpf:'',
-		password:''
+		email:'visitante@email.com',
+		password:'123456'
 	})
 
 
