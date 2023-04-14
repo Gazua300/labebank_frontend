@@ -3,19 +3,18 @@ import {useState, useEffect} from 'react'
 import {url} from '../../constants/urls'
 import {Container} from './styled'
 import Header from '../../components/Header'
-import Footer from '../../components/Footer'
 import { useNavigate } from 'react-router-dom'
 
 
 //===========================Inicio do compoente funcional=========
 const Transfer = ()=>{
 	const history = useNavigate()
+	const [cpf, setCpf] = useState('')
+	const [recipientCpf, setRecipientCpf] = useState('')
+	const [value, setValue] = useState('')
 	const [form, setForm] = useState({
 		password:'',
-		cpf:'',
 		recipientName:'',
-		recipientCpf:'',
-		value:''
 	})
 
 	useEffect(()=>{
@@ -26,6 +25,32 @@ const Transfer = ()=>{
 		}
 
 	}, [])
+
+
+	const handleCPF = (e)=>{
+        const inputValue = e.target.value
+    
+        if(!isNaN(inputValue)){
+            setCpf(inputValue)
+        }
+    }
+
+	const handleRecipientCpf = (e)=>{
+        const inputValue = e.target.value
+    
+        if(!isNaN(inputValue)){
+            setRecipientCpf(inputValue)
+        }
+    }
+
+	const handleValue = (e)=>{
+        const inputValue = e.target.value
+    
+        if(!isNaN(inputValue)){
+            setValue(inputValue)
+        }
+    }
+
 
 	const onChange = (e)=>{
 		const {name, value} = e.target
@@ -39,13 +64,20 @@ const Transfer = ()=>{
 		const body = {
 			token: localStorage.getItem('token'),
 			password: form.password,
-			cpf: Number(form.cpf),
+			cpf: Number(cpf),
 			recipientName: form.recipientName,
-			recipientCpf: Number(form.recipientCpf),
-			value: Number(form.value)
+			recipientCpf: Number(recipientCpf),
+			value: Number(value)
 		}
 
-		axios.post(`${url}/accounts/transfer`, body).then(res=>{
+		axios({
+			method:'POST',
+			url:`${url}/accounts/transfer`,
+			headers: {
+				Authorization: localStorage.getItem('token')
+			},
+			data: body
+		}).then(res=>{
 			alert(res.data)
 			setForm({
 				password:'',
@@ -66,26 +98,47 @@ const Transfer = ()=>{
 	}
 
 
+	const limpar = ()=>{
+		setCpf('')
+		setRecipientCpf('')
+		setValue('')
+		setForm({
+			password:'',
+			recipientName:''
+		})
+	}
+
+
 //=============================Render============================
 	return<div>
 			<Header/>
 			 <Container>
 				<h3>Transferências</h3>
 				<form onSubmit={transfer}>					
-					<input type='number' name='cpf' value={form.cpf}
-					 onChange={onChange} placeholder='CPF(somente números)' autoFocus required/>
-					<input type='text' name='recipientName' value={form.recipientName}
+					<input className='form-control' maxLength='11' 
+						type='text' name='cpf' value={cpf}
+					 onChange={handleCPF} placeholder='CPF(somente números)' autoFocus required/>
+					<input className='form-control'
+						type='text' name='recipientName' value={form.recipientName}
 					 onChange={onChange} placeholder='Nome do destinatário' required/>
-					<input type='number' name='recipientCpf' value={form.recipientCpf}
-					 onChange={onChange} placeholder='CPF do destinatário' required/>
-					<input type='number' name='value' value={form.value} onChange={onChange}
+					<input className='form-control' maxLength='11'
+						type='text' name='recipientCpf' value={recipientCpf}
+					 onChange={handleRecipientCpf} placeholder='CPF do destinatário' required/>
+					<input className='form-control' 
+						type='text' name='value' value={value} onChange={handleValue}
 					 placeholder='Valor R$ 0,00'required/>
-					<input type='password' name='password' value={form.password} onChange={onChange}
+					<input className='form-control'
+						type='password' name='password' value={form.password} onChange={onChange}
 					 placeholder='Sua senha' required/>
-					<button>Transferir</button>
+					<div className='input-container'>
+						<input className='btn btn-secondary'
+							value='Limpar'
+							type='button'
+							onClick={limpar}/>
+						<button className='btn btn-secondary'>Transferir</button>
+					</div>
 				</form>
 			  </Container>
-			  <Footer/>
 		   </div>
 }
 export default Transfer

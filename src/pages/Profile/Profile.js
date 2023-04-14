@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Header from '../../components/Header'
-import Footer from '../../components/Footer'
 import axios from 'axios'
 import { url } from '../../constants/urls'
 import { Container } from './styled'
@@ -32,7 +31,6 @@ const Profile = ()=>{
                     <b>Saldo: </b>{user.balance}
                 </div>
             </Container>
-		    <Footer/>
         </div>
     )
 }

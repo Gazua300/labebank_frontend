@@ -3,7 +3,6 @@ import axios from 'axios'
 import {url} from '../../constants/urls'
 import {Container} from './styled'
 import Header from '../../components/Header'
-import Footer from '../../components/Footer'
 import { useNavigate } from 'react-router-dom'
 
 
@@ -11,11 +10,28 @@ import { useNavigate } from 'react-router-dom'
 //===================Inicio do componente funcional==========================
 const Deposit = ()=>{
 	const history = useNavigate()
+	const [cpf, setCpf] = useState('')
+	const [value, setValue] = useState('')
 	const [form, setForm] = useState({
 		password:'',
-		cpf:'',
-		value:''
 	})
+
+
+	const handleCPF = (e)=>{
+        const inputValue = e.target.value
+    
+        if(!isNaN(inputValue)){
+            setCpf(inputValue)
+        }
+    }
+
+	const handleValue = (e)=>{
+        const inputValue = e.target.value
+    
+        if(!isNaN(inputValue)){
+            setValue(inputValue)
+        }
+    }
 
 
 	useEffect(()=>{
@@ -41,12 +57,19 @@ const Deposit = ()=>{
 		const body = {
 			token: localStorage.getItem('token'),
 			password: form.password,
-			cpf: Number(form.cpf),
-			value: Number(form.value)
+			cpf: Number(cpf),
+			value: Number(value)
 		}
 
-		axios.post(`${url}/accounts/deposit`, body).then(res=>{
-			alert(`Seu deposito de R$ ${form.value} foi efetuado com sucesso.`)
+		axios({
+			method:'POST',
+			url:`${url}/accounts/deposit`,
+			headers: {
+				Authorization: localStorage.getItem('token')
+			},
+			data: body
+		}).then((res)=>{
+			alert(res.data)
 			setForm({
 				password:'',
 				cpf:'',
@@ -64,6 +87,15 @@ const Deposit = ()=>{
 	}
 
 
+	const limpar = ()=>{
+		setCpf('')
+		setValue('')
+		setForm({
+			password:''
+		})
+	}
+
+
 //===========================Render================================
 
 	return<div>
@@ -71,16 +103,24 @@ const Deposit = ()=>{
 			 <Container>
 				<h3>Depositos</h3>
 				<form onSubmit={addCash}>					
-					<input type='number' name='cpf' value={form.cpf} onChange={onChange}
+					<input className='form-control' maxLength='11' 
+						type='text' name='cpf' value={cpf} onChange={handleCPF}
 					 placeholder='CPF(somente números)' autoFocus required/>
-					<input type='number' name='value' value={form.value} onChange={onChange}
+					<input className='form-control' 
+						type='text' name='value' value={value} onChange={handleValue}
 					 placeholder='R$ 0,00' required/>
-					<input type='password' name='password' value={form.password} onChange={onChange}
+					<input className='form-control' 
+						type='password' name='password' value={form.password} onChange={onChange}
 					 placeholder='Sua senha' required/>
-					<button>Efetuar</button>
+					<div className='input-container'>
+						<input className='btn btn-secondary'
+							value='Limpar'
+							type='button'
+							onClick={limpar}/>
+						<button className='btn btn-secondary'>Saldo</button>
+					</div>
 				</form>
 			  </Container>
-			  <Footer/>
 		  </div>
 }
 export default Deposit

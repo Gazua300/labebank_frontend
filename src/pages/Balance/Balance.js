@@ -1,19 +1,18 @@
 import {useState, useEffect} from 'react'
 import axios from 'axios'
 import {url} from '../../constants/urls'
-import {Container} from './styled'
 import Header from '../../components/Header'
-import Footer from '../../components/Footer'
 import { useNavigate } from 'react-router-dom'
+import { Container } from './styled'
 
 
 
 
 //==========================Component=======================
-const Home = ()=>{
+const Balance = ()=>{
 	const history = useNavigate()
+	const [cpf, setCpf] = useState('')
 	const [form, setForm] = useState({
-		cpf:'',
 		password:''
 	})
 
@@ -29,6 +28,15 @@ const Home = ()=>{
 	}, [])
 
 
+	const handleCPF = (e)=>{
+        const inputValue = e.target.value
+    
+        if(!isNaN(inputValue)){
+            setCpf(inputValue)
+        }
+    }
+
+
 	const onChange = (e)=>{
 		const {name, value} = e.target
 		setForm({...form, [name]: value})
@@ -39,12 +47,18 @@ const Home = ()=>{
 		e.preventDefault()
 
 		const body = {
-			token: localStorage.getItem('token'),
 			password: form.password,
-			cpf: Number(form.cpf)
+			cpf: Number(cpf)
 		}
 
-		axios.post(`${url}/accounts/balance`, body).then(res=>{
+		axios({
+			method:'POST',
+			url:`${url}/accounts/balance`,
+			headers: {
+				Authorization: localStorage.getItem('token')
+			},
+			data: body
+		}).then(res=>{
 			document.getElementById('result').innerHTML = `${res.data}`
 			setForm({
 				cpf:'',
@@ -61,21 +75,41 @@ const Home = ()=>{
 
 	}
 
+
+	const limpar = ()=>{
+		setForm({
+			cpf:'',
+			password:''
+		})
+	}
+
 //===============================Renderizaão===========================
 	return<div>
 		  <Header/>
 		  <Container className='content'>
 				<h3>Consulta de saldo</h3>
 			<form onSubmit={getBalance}>				
-				<input name='cpf' value={form.cpf} onChange={onChange}
-				 type='number' min='0' placeholder='CPF(somente números)'required/>
-				<input name='password' value={form.password} onChange={onChange}
+				<input className='form-control' 
+					name='cpf'
+					value={cpf}
+					onChange={handleCPF}
+				 	type='text'
+					maxLength='11'
+					placeholder='CPF(somente números)'
+					required/>
+				<input className='form-control' 
+					name='password' value={form.password} onChange={onChange}
 				 type='password' placeholder='Sua senha' autoFocus required/>
-				<button>Ver saldo</button>
+				<div className='input-container'>
+					<input className='btn btn-secondary'
+						value='Limpar'
+						type='button'
+						onClick={limpar}/>
+					<button className='btn btn-secondary'>Saldo</button>
+				</div>
 				<p id='result'></p>
 			</form>
-		   </Container>
-		   <Footer/>
+		   </Container>		   
 		  </div>
 }
-export default Home
+export default Balance

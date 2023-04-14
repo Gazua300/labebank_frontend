@@ -7,7 +7,6 @@ import Statement from '../pages/Statement/Statement'
 import Home from '../pages/Home/Home'
 import Login from '../pages/Login/Login'
 import Signup from '../pages/Signup/Signup'
-import Profile from '../pages/Profile/Profile'
 
 
 
@@ -21,7 +20,6 @@ const Router = ()=>{
 			<Route exact path='/transfer' element={<Transfer/>}/>
 			<Route exact path='/pay' element={<Payments/>}/>
 			<Route exact path='/statement' element={<Statement/>}/>
-			<Route exact path='/profile' element={<Profile/>}/>
 		  </Routes>
 }
 export default Router

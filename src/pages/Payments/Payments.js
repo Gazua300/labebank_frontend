@@ -3,16 +3,15 @@ import axios from 'axios'
 import {url} from '../../constants/urls'
 import {Container} from './styled'
 import Header from '../../components/Header'
-import Footer from '../../components/Footer'
 import { useNavigate } from 'react-router-dom'
 
 
 //+=======================Components==========================
 const Payments = ()=>{
 	const history = useNavigate()
+	const [cpf, setCpf] = useState('')
 	const [form, setForm] = useState({
 		password:'',
-		cpf:'',
 		initialDate:'',
 		value:'',
 		description:''
@@ -29,6 +28,15 @@ const Payments = ()=>{
 	}, [])
 
 
+	const handleCPF = (e)=>{
+        const inputValue = e.target.value
+    
+        if(!isNaN(inputValue)){
+            setCpf(inputValue)
+        }
+    }
+
+
 	const onChange = (e)=>{
 		const {name, value} = e.target
 		setForm({...form, [name]: value})
@@ -37,17 +45,26 @@ const Payments = ()=>{
 
 	const pay = (e)=>{
 		e.preventDefault()
+		const convert = form.initialDate.split('-')
+		const date = `${convert[2]}/${convert[1]}/${convert[0]}`
 
 		const body = {
 			token: localStorage.getItem('token'),
 			password: form.password,
-			cpf: Number(form.cpf),
-			initialDate: form.initialDate,
+			cpf: Number(cpf),
+			initialDate: date,
 			value: form.value,
 			description: form.description
 		}
 
-		axios.post(`${url}/accounts/payment`, body).then(res=>{
+		axios({
+			method:'POST',
+			url:`${url}/accounts/payment`,
+			headers: {
+				Authorization: localStorage.getItem('token')
+			},
+			data: body
+		}).then(res=>{
 			alert('Pagamento efetuado com sucesso!')
 			setForm({
 				password:'',
@@ -67,26 +84,67 @@ const Payments = ()=>{
 
 	}
 
+
+	const limpar = ()=>{
+		setCpf('')
+		setForm({
+			password:'',
+			initialDate:'',
+			value:'',
+			description:''
+		})
+	}
+
 //====================================Render=============================
 	return<div>
 			<Header/>
 			 <Container>
 				<h3>Pagamentos</h3>
 				<form onSubmit={pay}>					
-					<input type='number' name='cpf' value={form.cpf} onChange={onChange}
-					 placeholder='CPF(somente números)' required/>
-					<input type='date' name='initialDate' value={form.initialDate} onChange={onChange}
-					 required/>
-					<input type='text' name='description' value={form.description} onChange={onChange}
-					 placeholder='Descrição' required/>
-					<input type='number' name='value' value={form.value} onChange={onChange}
-					 placeholder='Valor R$ 0,00' required/>
-					<input type='password' name='password' value={form.password} onChange={onChange}
-					 placeholder='Sua senha' required/>
-					<button>Efetuar pagamento</button>
+					<input className='form-control'
+						type='text'
+						maxLength='11'
+						name='cpf'
+						value={cpf}
+						onChange={handleCPF}
+					 	placeholder='CPF(somente números)'
+						required/>
+					<input className='form-control'
+						type='date'
+						name='initialDate'
+						value={form.initialDate}
+						onChange={onChange}
+						required/>
+					<input className='form-control'
+						type='text'
+						name='description'
+						value={form.description}
+						onChange={onChange}
+					 	placeholder='Descrição'
+						required/>
+					<input className='form-control'
+						type='text'
+						name='value'
+						value={form.value}
+						onChange={onChange}
+						placeholder='Valor R$ 0,00' 
+						required/>
+					<input className='form-control'
+						type='password'
+						name='password'
+						value={form.password}
+						onChange={onChange}
+					 	placeholder='Sua senha'
+						required/>
+					<div className='input-container'>
+						<input className='btn btn-secondary'
+							value='Limpar'
+							type='button'
+							onClick={limpar}/>
+						<button className='btn btn-secondary'>Saldo</button>
+					</div>
 				</form>
 			  </Container>
-			  <Footer />
 		  </div>
 }
 export default Payments

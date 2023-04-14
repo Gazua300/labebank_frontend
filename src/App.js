@@ -2,6 +2,8 @@ import {BrowserRouter} from 'react-router-dom'
 import GlobalState from './global/GlobalState'
 import Router from './routes/Routes'
 import {createGlobalStyle} from 'styled-components'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 
 
 const GlobalStyle = createGlobalStyle`
@@ -16,8 +18,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   input{
-    width: 200px;
-    border-radius: 10px;
+    @media(max-width: 500px){
+			width: 60vw;
+		}
   }
 
 `
