@@ -1,1 +1,1 @@
-export const url = 'https://labebank-production.up.railway.app'
+export const url = 'https://labebank.vercel.app'
